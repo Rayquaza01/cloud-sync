@@ -12,9 +12,6 @@ runAction() {
 	LOCAL="${LOCAL/#\~/$HOME}"
 	REMOTE=$(echo $1 | cut -d"," -f3)
 
-	echo "$LOCAL"
-	echo "$REMOTE"
-
 	case "$2" in
 		backup)
 		  	echo "Backing up $LOCAL to $REMOTE"
@@ -40,11 +37,9 @@ CONFIG_CONTENTS=$(grep -v --color=never "^#" $CONFIG_FILE)
 
 if [ $1 == "all" ]; then
 	while read ENTRY; do
-		echo $ENTRY
 		runAction $ENTRY $2
 	done <<< $CONFIG_CONTENTS
 else
 	ENTRY=$(echo $CONFIG_CONTENTS | grep --color=never "^$1,")
-	echo $ENTRY
 	runAction $ENTRY $2
 fi
