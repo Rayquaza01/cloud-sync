@@ -40,6 +40,6 @@ if [ $1 == "all" ]; then
 		runAction $ENTRY $2
 	done <<< $CONFIG_CONTENTS
 else
-	ENTRY=$(echo $CONFIG_CONTENTS | grep --color=never "^$1,")
+	ENTRY=$(echo "$CONFIG_CONTENTS" | grep --color=never "^$1,")
 	runAction $ENTRY $2
 fi
