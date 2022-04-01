@@ -1,0 +1,4 @@
+# Cloud Sync Config File
+# name, local path, remote path
+retroarch,~/.var/app/org.libretro.RetroArch/config/retroarch/saves,OneDrive:Games/retroarch/saves
+baba,~/.local/share/Baba_Is_You,OneDrive:Games/baba

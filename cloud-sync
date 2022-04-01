@@ -1,0 +1,50 @@
+#!/bin/bash
+
+CONFIG_DIR=${XDG_CONFIG_HOME:-~/.config}/r01-cloud-sync
+CONFIG_FILE=${CONFIG_DIR}/config.csv
+
+runAction() {
+	if [ -z $1 ]; then
+		return
+	fi
+
+	LOCAL=$(echo $1 | cut -d"," -f2)
+	LOCAL="${LOCAL/#\~/$HOME}"
+	REMOTE=$(echo $1 | cut -d"," -f3)
+
+	echo "$LOCAL"
+	echo "$REMOTE"
+
+	case "$2" in
+		backup)
+		  	echo "Backing up $LOCAL to $REMOTE"
+		 	rclone sync $LOCAL $REMOTE --verbose
+			;;
+		restore)
+		  	echo "Restoring $LOCAL from $REMOTE"
+		 	rclone sync $REMOTE $LOCAL --verbose
+			;;
+	esac
+}
+
+if [ $# -ne 2 ]; then
+	echo "Usage:"
+	echo "	$0 [name] [action]"
+	echo ""
+	echo "	[name]: A name from the config file, or all"
+	echo "	[action]: One of backup or restore"
+	exit 1
+fi
+
+CONFIG_CONTENTS=$(grep -v --color=never "^#" $CONFIG_FILE)
+
+if [ $1 == "all" ]; then
+	while read ENTRY; do
+		echo $ENTRY
+		runAction $ENTRY $2
+	done <<< $CONFIG_CONTENTS
+else
+	ENTRY=$(echo $CONFIG_CONTENTS | grep --color=never "^$1,")
+	echo $ENTRY
+	runAction $ENTRY $2
+fi
