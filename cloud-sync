@@ -2,6 +2,7 @@
 
 CONFIG_DIR=${XDG_CONFIG_HOME:-~/.config}/r01-cloud-sync
 CONFIG_FILE=${CONFIG_DIR}/config.csv
+CONFIG_CONTENTS=$(grep -v --color=never "^#" $CONFIG_FILE)
 
 runAction() {
 	if [ -z $1 ]; then
@@ -24,6 +25,13 @@ runAction() {
 	esac
 }
 
+if [ $1 == "list" ]; then
+	while read ENTRY; do
+		echo $(echo $ENTRY | cut -d, -f1)
+	done <<< $CONFIG_CONTENTS
+	exit 0
+fi
+
 if [ $# -ne 2 ]; then
 	echo "Usage:"
 	echo "	$0 [name] [action]"
@@ -33,7 +41,6 @@ if [ $# -ne 2 ]; then
 	exit 1
 fi
 
-CONFIG_CONTENTS=$(grep -v --color=never "^#" $CONFIG_FILE)
 
 if [ $1 == "all" ]; then
 	while read ENTRY; do
